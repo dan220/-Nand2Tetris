@@ -27,5 +27,19 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+
+    // Check where to load input. If the address is in range 0-16,383 load in RAM, if address is in range 16383-24,575 load into screen and if the address is in range 24,575 - 24,576 load into keyboard. Could use DMux for this 
+    DMux4Way(in=load, sel=address[13..14], a=w1, b=w2, c=w3, d=w4);
+
+    
+
+    // Load cpu outM into Ram
+    RAM16K(in=in, load=w1, address=address[0..13], out=out);
+    RAM16K(in=in, load=w2, address=address[0..13], out=out);
+
+    // Load cpu outM into screen
+    Screen(in=in, load=w3, address=address, out=out);
+
+    // Load cpu outM into keyboard
+    Keyboard(out=out);
 }
