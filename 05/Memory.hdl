@@ -34,12 +34,14 @@ CHIP Memory {
     
 
     // Load cpu outM into Ram
-    RAM16K(in=in, load=w1, address=address[0..13], out=out);
-    RAM16K(in=in, load=w2, address=address[0..13], out=out);
+    RAM16K(in=in, load=w1, address=address[0..13], out=out1);
+    RAM16K(in=in, load=w2, address=address[0..13], out=out2);
 
     // Load cpu outM into screen
-    Screen(in=in, load=w3, address=address, out=out);
+    Screen(in=in, load=w3, address=address[0..12], out=out3);
 
     // Load cpu outM into keyboard
-    Keyboard(out=out);
+    Keyboard(out=out4);
+
+    Mux4Way16(a=out1, b=out2, c=out3, d=out4, sel=address[13..14], out=out);
 }
