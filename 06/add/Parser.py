@@ -1,22 +1,26 @@
 # create a class called parser
 class Parser:
-    def __init__(self):
+    def __init__(self, input_file):
         # open Add.asm file
-        self.input_file = open('Add.asm', 'r')
+        self.input_file = input_file
+        self.current_line = 0
 
     def hasMoreLines(self):
-        return self.input_file.readline() != ''
+        self.current_line = self.input_file.readline()
+        return self.current_line != ''
 
-    def advance(self, input_file):
+    def advance(self):
         # skip over lines with blank space or comments
-        while self.hasMoreLines() and (self.input_file[0] == '' or self.input_file[0] == '//'):
-            self.input_file.readline()
+        print(self.current_line[0:2])
+        while self.current_line[0:2] == '\n' or self.current_line[0:2] == '//':
+            print(self.current_line)
+            self.current_line = self.input_file.readline()
 
     def instructionType(self):
         # check if the line is a command
-        if self.input_file[0] == '@':
+        if self.current_line[0] == '@':
             return 'A_INSTRUCTION'
-        elif self.input_file[0] == '(':
+        elif self.current_line[0] == '(':
             return 'L_INSTRUCTION'
         else:
             return 'C_INSTRUCTION'
@@ -24,26 +28,26 @@ class Parser:
     def symbol(self):
         # return the symbol or decimal
         if self.instructionType() == 'A_INSTRUCTION':
-            return self.input_file[1:]
+            return self.current_line[1:]
         elif self.instructionType() == 'L_INSTRUCTION':
-            return self.input_file[1:-1]
+            return self.current_line[1:-1]
 
     def dest(self):
         # return the dest mnemonic
-        if '=' in self.input_file:
-            return self.input_file.split('=')[0]
+        if '=' in self.current_line:
+            return self.current_line.split('=')[0]
         else:
             return 'null'
 
     def comp(self):
         # return the comp mnemonic
-        if '=' in self.input_file:
-            return self.input_file.split('=')[1]
+        if '=' in self.current_line:
+            return self.current_line.split('=')[1]
 
     def jump(self):
         # return the jump mnemonic
-        if ';' in self.input_file:
-            return self.input_file.split(';')[1]
+        if ';' in self.current_line:
+            return self.current_line.split(';')[1]
         else:
             return 'null'
 
